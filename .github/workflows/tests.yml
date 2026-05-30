@@ -1,0 +1,52 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '7.4'
+          - '8.1'
+          - '8.3'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --no-check-publish --strict
+
+      - name: Lint source files
+        run: find src -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Run tests
+        run: composer test
+
+      - name: Check errors stop execution
+        run: |
+          set +e
+          output="$(php tests/ErrorStopsTest.php 2>&1)"
+          status="$?"
+          set -e
+
+          echo "$output"
+
+          if [ "$status" -eq 0 ]; then
+            echo "Expected ErrorStopsTest.php to stop with a non-zero exit code."
+            exit 1
+          fi
+
+          echo "$output" | grep -q "handled error"

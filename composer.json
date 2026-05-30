@@ -1,0 +1,23 @@
+{
+    "name": "kiss-php/errors",
+    "description": "Kiss errors manager for php.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kiss\\Errors\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "A.Grandes.R",
+            "email": "agrandesr@gmail.com"
+        }
+    ],
+    "scripts": {
+        "test": "php tests/ErrorsTest.php"
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}
