@@ -1,6 +1,6 @@
 # KISS-PHP Errors
 
-Small PHP error handler for KISS-PHP.
+Kiss errors manager for PHP.
 
 ## Install
 
@@ -8,46 +8,172 @@ Small PHP error handler for KISS-PHP.
 composer require kiss-php/errors
 ```
 
-## Use
+## Flow
+
+Callbacks do not decide if the program continues.
+
+KISS-PHP Errors follows PHP behavior:
+
+- Warnings, notices, deprecations, and strict errors continue after the callback.
+- Errors, parse errors, recoverable errors, and exceptions stop after the callback.
+- If there is no callback for an error type, PHP handles it with its default behavior.
+
+Every callback receives an `ErrorInfo` object. You can also receive `$message`, `$file`, `$line`, and `$level`.
+
+## ALL
+
+`ALL::callback` registers the same callback for every error type.
+
+It receives the error type first.
 
 ```php
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\ALL;
+
+ALL::callback(function (string $type, $error, $message, $file, $line, $level) {
+    echo '[' . $type . '] ' . $message . ' in ' . $file . ':' . $line;
+});
+```
+
+## WARNING
+
+```php
+<?php
 require 'vendor/autoload.php';
 
 use Kiss\Errors\WARNING;
-use Kiss\Errors\NOTICE;
 
 WARNING::callback(function ($error, $message, $file, $line, $level) {
-    echo $error;
+    echo 'Warning: ' . $message;
 });
+
+fopen('missing-file.txt', 'r');
+```
+
+Warnings continue after the callback.
+
+## NOTICE
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\NOTICE;
 
 NOTICE::callback(function ($error) {
     echo $error;
 });
 ```
 
-Available callbacks:
+Notices continue after the callback.
+
+## ERROR
 
 ```php
-ALL::callback(function (string $type, $error) {}); // Same callback for every error type.
-WARNING::callback(function ($error) {});
-ERROR::callback(function ($error) {});
-NOTICE::callback(function ($error) {});
-DEPRECATED::callback(function ($error) {});
-STRICT::callback(function ($error) {});
-RECOVERABLE::callback(function ($error) {});
-PARSE_ERROR::callback(function ($error) {});
-FATAL::callback(function ($error) {});
-EXCEPTION::callback(function ($error) {});
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\ERROR;
+
+ERROR::callback(function ($error) {
+    echo 'Error: ' . $error->message;
+});
 ```
 
-The callback receives an `ErrorInfo` object first. You can also receive `$message`, `$file`, `$line`, and `$level` as extra arguments.
+Errors stop after the callback.
 
-`ALL::callback` receives the error type first, then the `ErrorInfo` object and the other arguments.
+## DEPRECATED
 
-Callbacks do not control the program flow.
+```php
+<?php
+require 'vendor/autoload.php';
 
-Warnings, notices, deprecations, and strict errors continue after the callback, just like PHP.
+use Kiss\Errors\DEPRECATED;
 
-Errors, parse errors, recoverable errors, and exceptions stop the program after the callback.
+DEPRECATED::callback(function ($error) {
+    echo 'Deprecated: ' . $error->message;
+});
+```
 
-If there is no callback for an error type, PHP handles it with its default behavior.
+Deprecations continue after the callback.
+
+## STRICT
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\STRICT;
+
+STRICT::callback(function ($error) {
+    echo 'Strict: ' . $error->message;
+});
+```
+
+Strict errors continue after the callback.
+
+## RECOVERABLE
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\RECOVERABLE;
+
+RECOVERABLE::callback(function ($error) {
+    echo 'Recoverable error: ' . $error->message;
+});
+```
+
+Recoverable errors stop after the callback.
+
+## PARSE_ERROR
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\PARSE_ERROR;
+
+PARSE_ERROR::callback(function ($error) {
+    echo 'Parse error: ' . $error->message;
+});
+```
+
+Parse errors stop after the callback when PHP can report them during shutdown.
+
+## FATAL
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\FATAL;
+
+FATAL::callback(function ($error) {
+    echo 'Fatal error: ' . $error->message;
+});
+```
+
+`FATAL` is an alias for `ERROR`.
+
+Fatal errors stop after the callback.
+
+## EXCEPTION
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Kiss\Errors\EXCEPTION;
+
+EXCEPTION::callback(function ($error) {
+    echo 'Exception: ' . $error->message;
+});
+
+$result = 24 / 0;
+```
+
+Exceptions stop after the callback.

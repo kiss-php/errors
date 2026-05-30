@@ -100,7 +100,7 @@ class Manager {
     }
 
     private function hasCallback(string $type) : bool {
-        return is_callable($this->callbacks[$type] ?? null) || is_callable($this->callbacks['all'] ?? null);
+        return is_callable($this->callbacks[$type] ?? null);
     }
 
     private function defaultPhpError(int $level, string $message, string $file, int $line) : bool {
@@ -112,7 +112,7 @@ class Manager {
     }
 
     private function dispatch(ErrorInfo $error) : bool {
-        $callback = $this->callbacks[$error->type] ?? $this->callbacks['all'] ?? null;
+        $callback = $this->callbacks[$error->type] ?? null;
 
         if(!is_callable($callback)) return $this->continuesAfterCallback($error->type);
 

@@ -16,8 +16,4 @@ class ALL extends TypeCallback {
         PARSE_ERROR::callback($wrappedCallback);
         EXCEPTION::callback($wrappedCallback);
     }
-
-    public static function calback(callable $callback) : void {
-        self::callback($callback);
-    }
 }
