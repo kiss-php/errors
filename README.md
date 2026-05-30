@@ -144,23 +144,6 @@ PARSE_ERROR::callback(function ($error) {
 
 Parse errors stop after the callback when PHP can report them during shutdown.
 
-## FATAL
-
-```php
-<?php
-require 'vendor/autoload.php';
-
-use Kiss\Errors\FATAL;
-
-FATAL::callback(function ($error) {
-    echo 'Fatal error: ' . $error->message;
-});
-```
-
-`FATAL` is an alias for `ERROR`.
-
-Fatal errors stop after the callback.
-
 ## EXCEPTION
 
 ```php
