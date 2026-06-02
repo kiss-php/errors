@@ -2,9 +2,14 @@
 namespace Kiss\Errors;
 
 class Manager {
-    private bool $started = false;
-    private array $callbacks = [];
-    private string $reservedMemory = '';
+    /** @var bool */
+    private $started = false;
+
+    /** @var array<string, callable> */
+    private $callbacks = [];
+
+    /** @var string */
+    private $reservedMemory = '';
     private $previousErrorHandler = null;
     private $previousExceptionHandler = null;
 

@@ -4,6 +4,8 @@ Kiss errors manager for PHP.
 
 ## Install
 
+Requires PHP 7.2 or newer.
+
 ```bash
 composer require kiss-php/errors
 ```

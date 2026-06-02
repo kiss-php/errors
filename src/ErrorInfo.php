@@ -2,12 +2,23 @@
 namespace Kiss\Errors;
 
 class ErrorInfo {
-    public int $level;
-    public string $message;
-    public string $file;
-    public int $line;
-    public string $type;
-    public ?\Throwable $exception;
+    /** @var int */
+    public $level;
+
+    /** @var string */
+    public $message;
+
+    /** @var string */
+    public $file;
+
+    /** @var int */
+    public $line;
+
+    /** @var string */
+    public $type;
+
+    /** @var \Throwable|null */
+    public $exception;
 
     public function __construct(
         int $level,
